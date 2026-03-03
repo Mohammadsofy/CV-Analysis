@@ -28,8 +28,9 @@ print(extract_text_from_image("image.png"))
 
 def extract_email(text):
   print(text)
-  pattern=r'[a-z0-9.-\ٍs]+\s?@\s?[\s\w.-]+\s?\.\s?+\w+'
-  return re.findall(pattern,text)
+  pattern=r'[\w\s\.-]+@[\w\s\.-]+\.\w+'
+  result= re.findall(pattern,text.lower())
+  return result[0].replace(" ","").strip()
 
 print(extract_email(extract_text_from_image("image.png")))
 
@@ -43,7 +44,7 @@ def extract_name(text):
   doc=nlp(text)
   for ent in doc.ents:
     if ent.label_=="PERSON":
-      return ent.text
+      return ent.text.strip()
 print(extract_name(extract_text_from_image("image.png")))
 
 
@@ -80,7 +81,7 @@ def storage_data_in_json(image_path):
       "skills":extract_skills(text)
   }
   name_without_ext = os.path.splitext(os.path.basename(image_path))[0]
-  output_path = os.path.join("/content/json", name_without_ext + ".json")
+  output_path = os.path.join("file.json", name_without_ext + ".json")
   with open(output_path, "w", encoding="utf-8") as f:
         json.dump(extract_data, f, indent=2, ensure_ascii=False)
 storage_data_in_json("image.png")
