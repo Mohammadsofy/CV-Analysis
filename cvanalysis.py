@@ -8,6 +8,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import re
 from groq import Groq
+import streamlit as st
 nlp=spacy.load("en_core_web_sm")
 
 def extract_text_from_image(path_image):
@@ -147,7 +148,10 @@ def parse_cv_with_llm(text):
         max_tokens=1000,
     )
     raw=response.choices[0].message.content.strip()
+    raw=raw.replace("```json","").replace("```","").strip()
     try:
         return json.loads(raw)
-    except:
+    except Exception as e:
+        st.error(f"Parse error: {e}")
+        st.code(raw)  # عشان تشوف شو رجع الـ LLM
         return None
