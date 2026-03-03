@@ -48,11 +48,11 @@ if uploaded_file:
     st.subheader("👤 Basic information")
     col1, col2,col3 = st.columns(3)
     with col1:
-        st.markdown(f"**name:** {data['name']}")
+        st.markdown(f"**Name:**\n {data['name']}")
     with col2:
-        st.markdown(f"**email:** {data['email']}")
+        st.markdown(f"**Email:**\n {data['email']}")
     with col3:
-        st.markdown(f"**phone:** {data['phone'][0] if data['phone'] else 'مو موجود'}")
+        st.markdown(f"**Phone:**\n {data['phone'][0] if data['phone'] else 'Not found'}")
 
     st.subheader("🛠️ Skills")
     if data["skills"]:

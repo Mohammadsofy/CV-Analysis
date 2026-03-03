@@ -135,8 +135,14 @@ def parse_cv_with_llm(text):
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     prompt=f"""
         Extract information from this CV text and return ONLY a JSON object with these exact fields:
-        name (string), email (string), phone (string), skills (list), education (list), experience (list), languages (list), certifications (list)
-
+        - name (string)
+        - email (string)
+        - phone (string, may contain numbers, spaces, +, -, ., commas)
+        - skills (list of strings)
+        - education (list of strings)
+        - experience (list of strings)
+        - languages (list of strings)
+        - certifications (list of strings)
         CV Text:
         {text}
 
