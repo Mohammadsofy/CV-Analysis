@@ -1,19 +1,25 @@
 # CV Analyzer 📄
 
-## What is this?
-A tool that extracts and analyzes CV information using OCR and NLP.
+A tool that extracts and analyzes information from CV images using OCR and NLP.
 
 ## Features
-- Extract text from images
-- Extract name, email, phone, skills
-- Match CV with job description (coming soon)
+- Extracts text from CV images (OCR)
+- Identifies name, email, phone number
+- Detects skills, education, experience, languages, and certifications
+- Matches CV against a job description and returns a match score
+- Saves extracted data as structured JSON
 
-## Tech Stack
-Python, pytesseract, spaCy, sklearn, Streamlit
+## Technologies Used
+- Python
+- pytesseract / OpenCV — OCR & image processing
+- spaCy — NLP & name extraction
+- scikit-learn — TF-IDF & cosine similarity
+- Pillow / PyMuPDF — image & PDF handling
 
-## How to run
-pip install -r requirements.txt
-python app.py
+## How to Run
+1. Open in Google Colab
+2. Upload your CV image
+3. Run all cells
 
-## Project Status
-🚧 In Progress
+## Status
+> Work in progress — currently tested on a limited number of CVs.
