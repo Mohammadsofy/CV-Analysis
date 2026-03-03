@@ -48,12 +48,15 @@ if uploaded_file:
     st.subheader("👤 Basic information")
     col1, col2,col3 = st.columns(3)
     with col1:
-        st.markdown(f"**Name:**\n {data['name']}")
+        st.markdown(f"**Name:**")
+        st.markdown(f"<span style='color:#4CAF50; font-size:18px'>{data['name']}</span>", unsafe_allow_html=True)
     with col2:
-        st.markdown(f"**Email:**\n {data['email']}")
+        st.markdown(f"**Email:** ")
+        st.markdown(f"<span style='color:#4CAF50; font-size:18px'>{data['email']}</span>", unsafe_allow_html=True)
     with col3:
-        st.markdown(f"**Phone:**\n {data['phone'][0] if data['phone'] else 'Not found'}")
-
+        st.markdown(f"**Phone:** ")
+    phone = data['phone'] if isinstance(data['phone'], str) else (data['phone'][0] if data['phone'] else 'Not found')
+    st.markdown(f"<span style='color:#4CAF50; font-size:18px'>{phone}</span>", unsafe_allow_html=True)
     st.subheader("🛠️ Skills")
     if data["skills"]:
         skills_html = " ".join([
