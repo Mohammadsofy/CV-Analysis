@@ -129,22 +129,3 @@ def extract_certifications(text):
         if in_section and line.strip():
             certifications.append(line.strip())
     return certifications
-# def storage_data_in_json(image_path):
-#   text=extract_text_from_image(image_path)
-#   extract_data={
-#       "name":extract_name(text),
-#       "email":extract_email(text),
-#       "phone":extract_phone(text),
-#       "skills":extract_skills(text),
-#       "education":extract_education(text),
-#       "experience":extract_experience(text),
-#       "languages":extract_languages(text),
-#       "certifications":extract_certifications(text)
-#   }
-#   name_without_ext = os.path.splitext(os.path.basename(image_path))[0]
-#   json_dir = "/content/json"
-#   os.makedirs(json_dir, exist_ok=True)
-#   output_path = os.path.join(json_dir, name_without_ext + ".json")
-#   with open(output_path, "w", encoding="utf-8") as f:
-#         json.dump(extract_data, f, indent=2, ensure_ascii=False)
-# storage_data_in_json("image.png")
