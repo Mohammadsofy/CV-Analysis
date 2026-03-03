@@ -35,24 +35,36 @@ if uploaded_file:
             "certifications": extract_certifications(text)
         }
 
-    st.subheader("👤 information")
-    st.write("**name:** ", data["name"])
-    st.write("**email:** ", data["email"])
-    st.write("**phone:** ", data["phone"][0] if data["phone"] else "مو موجود")
+    st.subheader("👤 Basic information")
+    col1, col2,col3 = st.columns(3)
+    with col1:
+        st.markdown(f"**name:** {data['name']}")
+    with col2:
+        st.markdown(f"**email:** {data['email']}")
+    with col3:
+        st.markdown(f"**phone:** {data['phone'][0] if data['phone'] else 'مو موجود'}")
 
-    st.subheader("🛠️ skills")
-    st.write("\n".join(data["skills"]) if data["skills"] else "مو موجود")
+    st.subheader("🛠️ Skills")
+    if data["skills"]:
+        skills_html = " ".join([
+            f'<span style="background:#4CAF50; color:white; padding:4px 12px; border-radius:12px; margin:3px; display:inline-block">{s}</span>'
+            for s in data["skills"]
+        ])
+        st.markdown(skills_html, unsafe_allow_html=True)
+    else:
+        st.write("Not found")
 
-    st.subheader("🎓 education")
-    for edu in data["education"]:
-        st.markdown(f"• {edu}")
-    st.subheader("💼 experience")
-    for exp in data["experience"]:
-        st.markdown(f"• {exp}")
-    st.subheader("🌍 languages")
-    for lang in data["languages"]:
-        st.markdown(f"• {lang}")
-    st.subheader("📜 certifications")
-    for cert in data["certifications"]:
-        st.markdown(f"• {cert}")
+    # باقي الأقسام
+    for section, emoji, title in [
+        ("education", "🎓", "Education"),
+        ("experience", "💼", "Experience"),
+        ("languages", "🌍", "Languages"),
+        ("certifications", "📜", "Certifications")
+    ]:
+        st.subheader(f"{emoji} {title}")
+        if data[section]:
+            for item in data[section]:
+                st.markdown(f"• {item}")
+        else:
+            st.write("Not found")
     os.unlink(tmp_path)
