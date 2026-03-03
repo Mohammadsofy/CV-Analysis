@@ -11,10 +11,14 @@ from cvanalysis import *
 
 
 st.title("📄 CV Analyzer")
-st.write("Upload a screenshot of your CV to extract information such as name, email, phone number, skills, education, experience, languages, and certifications.")
-
+st.write("Upload your CV image and choose your preferred extraction method:")
+st.markdown("""
+- 🔧 **using rule-based** — Fast extraction using NLP and pattern matching
+- 🤖 **using LLM** — Accurate extraction using Large Language Model
+""")
 uploaded_file = st.file_uploader("Upload CV", type=["png", "jpg", "jpeg"])
-
+method=st.radio("Choose extraction method",
+                 ("🤖using LLM", "🧠using rule-based"))
 if uploaded_file:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
         tmp.write(uploaded_file.read())
@@ -24,16 +28,22 @@ if uploaded_file:
 
     with st.spinner("جاري التحليل..."):
         text = extract_text_from_image(tmp_path)
-        data = {
-            "name": extract_name(text),
-            "email": extract_email(text),
-            "phone": extract_phone(text),
-            "skills": extract_skills(text),
-            "education": extract_education(text),
-            "experience": extract_experience(text),
-            "languages": extract_languages(text),
-            "certifications": extract_certifications(text)
-        }
+        if method =="🤖using LLM":
+            data=parse_cv_with_llm(text)
+            if not data:
+                st.error("AI analysis failed, try a clearer image")
+                st.stop()
+        else:
+            data = {
+                "name": extract_name(text),
+                "email": extract_email(text),
+                "phone": extract_phone(text),
+                "skills": extract_skills(text),
+                "education": extract_education(text),
+                "experience": extract_experience(text),
+                "languages": extract_languages(text),
+                "certifications": extract_certifications(text)
+            }
 
     st.subheader("👤 Basic information")
     col1, col2,col3 = st.columns(3)

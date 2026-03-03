@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import re
+from groq import Groq
 nlp=spacy.load("en_core_web_sm")
 
 def extract_text_from_image(path_image):
@@ -129,3 +130,24 @@ def extract_certifications(text):
         if in_section and line.strip():
             certifications.append(line.strip())
     return certifications
+def parse_cv_with_llm(text):
+    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    prompt=f"""
+        Extract information from this CV text and return ONLY a JSON object with these exact fields:
+        name (string), email (string), phone (string), skills (list), education (list), experience (list), languages (list), certifications (list)
+
+        CV Text:
+        {text}
+
+        Return ONLY the JSON object, nothing else.
+        """
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000,
+    )
+    raw=response.choices[0].message.content.strip()
+    try:
+        return json.loads(raw)
+    except:
+        return None
