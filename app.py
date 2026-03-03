@@ -1,13 +1,14 @@
+import subprocess
+import sys
+subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"], 
+               capture_output=True)
 import streamlit as st
 from PIL import Image
 import json
 import tempfile
 import os
 from cvanalysis import *
-import subprocess
-import sys
-subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"], 
-               capture_output=True)
+
 
 st.title("📄 CV Analyzer")
 st.write("ارفع صورة الـ CV وبنحلل كل شي!")
