@@ -23,3 +23,6 @@ A tool that extracts and analyzes information from CV images using OCR and NLP.
 
 ## Status
 > Work in progress — currently tested on a limited number of CVs.
+
+## link app
+(https://cv-analysis-9tadmigdeuopqnshrpe3uv.streamlit.app/)
