@@ -11,12 +11,11 @@ from cvanalysis import *
 
 
 st.title("📄 CV Analyzer")
-st.write("ارفع صورة الـ CV وبنحلل كل شي!")
+st.write("Upload a screenshot of your CV to extract information such as name, email, phone number, skills, education, experience, languages, and certifications.")
 
-uploaded_file = st.file_uploader("ارفع CV", type=["png", "jpg", "jpeg"])
+uploaded_file = st.file_uploader("Upload CV", type=["png", "jpg", "jpeg"])
 
 if uploaded_file:
-    # حفظ الصورة مؤقتاً عشان نقدر نمررها للـ functions
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
         tmp.write(uploaded_file.read())
         tmp_path = tmp.name
@@ -36,25 +35,24 @@ if uploaded_file:
             "certifications": extract_certifications(text)
         }
 
-    # عرض النتائج
-    st.subheader("👤 المعلومات الأساسية")
-    st.write("**الاسم:**", data["name"])
-    st.write("**الإيميل:**", data["email"])
-    st.write("**الرقم:**", data["phone"])
+    st.subheader("👤 information")
+    st.write("**name:** ", data["name"])
+    st.write("**email:** ", data["email"])
+    st.write("**phone:** ", data["phone"][0] if data["phone"] else "مو موجود")
 
-    st.subheader("🛠️ المهارات")
-    st.write(", ".join(data["skills"]) if data["skills"] else "مو موجود")
+    st.subheader("🛠️ skills")
+    st.write("\n".join(data["skills"]) if data["skills"] else "مو موجود")
 
-    st.subheader("🎓 التعليم")
-    st.write("\n".join(data["education"]) if data["education"] else "مو موجود")
-
-    st.subheader("💼 الخبرات")
-    st.write("\n".join(data["experience"]) if data["experience"] else "مو موجود")
-
-    st.subheader("🌍 اللغات")
-    st.write("\n".join(data["languages"]) if data["languages"] else "مو موجود")
-
-    st.subheader("📜 الشهادات")
-    st.write("\n".join(data["certifications"]) if data["certifications"] else "مو موجود")
-
+    st.subheader("🎓 education")
+    for edu in data["education"]:
+        st.markdown(f"• {edu}")
+    st.subheader("💼 experience")
+    for exp in data["experience"]:
+        st.markdown(f"• {exp}")
+    st.subheader("🌍 languages")
+    for lang in data["languages"]:
+        st.markdown(f"• {lang}")
+    st.subheader("📜 certifications")
+    for cert in data["certifications"]:
+        st.markdown(f"• {cert}")
     os.unlink(tmp_path)
