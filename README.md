@@ -17,14 +17,12 @@ A tool that extracts and analyzes information from CV image using OCR and NLP.
 2. Choose extraction method:
    - 🔧 **Rule-based** — NLP + regex pattern matching (fast)
    - 🤖 **AI-powered** — LLM (Groq / LLaMA 3.3) for accurate extraction
-3. Optionally paste a job description to get your match score
 
 ## 🛠️ Built With
 - Python
 - Tesseract OCR — text extraction from images
 - OpenCV + Pillow — image processing
 - spaCy — NLP and name extraction
-- scikit-learn — TF-IDF and cosine similarity
 - Groq / LLaMA 3.3 — AI-powered extraction
 - Streamlit — web interface
 
