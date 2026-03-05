@@ -14,16 +14,20 @@ def extract_text_from_image(path_image):
   text=""
   images=Image.open(path_image)
   img_np=np.array(images)
-  gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
-
+  if len(img_np.shape)==3: 
+    gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
+  else:
+    gray=img_np
   sizeimage=cv2.resize(gray,None,fx=2,fy=2,interpolation=cv2.INTER_CUBIC)
 
-  lessnoise=cv2.GaussianBlur(sizeimage,(3,3),0)
+  denoised=cv2.fastNlMeansDenoising(sizeimage,h=10)
+  clahe=cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))
+  enhanced=clahe.apply(denoised)
 
-  thresholds=cv2.threshold(lessnoise,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-
+  thresholds=cv2.threshold(enhanced,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+  contig=r"--oem 3 --psm 6"
   replaceimagetopil=Image.fromarray(thresholds)
-  text=pytesseract.image_to_string(replaceimagetopil,lang="eng")
+  text=pytesseract.image_to_string(replaceimagetopil,lang="eng",config=contig)
   return text
 def extract_email(text):
   print(text)
