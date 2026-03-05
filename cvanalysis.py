@@ -5,6 +5,7 @@ import spacy
 import os
 import numpy as np
 from PIL import Image
+import matplotlib.pyplot as plt
 import re
 from groq import Groq
 import streamlit as st
@@ -14,21 +15,16 @@ def extract_text_from_image(path_image):
   text=""
   images=Image.open(path_image)
   img_np=np.array(images)
-  if len(img_np.shape)==3:
-    gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
-  else:
-    gray=img_np
+  gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
 
   sizeimage=cv2.resize(gray,None,fx=2,fy=2,interpolation=cv2.INTER_CUBIC)
 
-  denoised=cv2.fastNlMeansDenoising(sizeimage,h=10)
-  clahe=cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))
-  enhanced=clahe.apply(denoised)
+  lessnoise=cv2.GaussianBlur(sizeimage,(3,3),0)
 
-  thresholds=cv2.threshold(enhanced,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-  config=r"--oem 3 --psm 6"
+  thresholds=cv2.threshold(lessnoise,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+
   replaceimagetopil=Image.fromarray(thresholds)
-  text=pytesseract.image_to_string(replaceimagetopil,lang="eng", config=config)
+  text=pytesseract.image_to_string(replaceimagetopil,lang="eng")
   return text
 def extract_email(text):
   print(text)
@@ -45,45 +41,40 @@ def extract_name(text):
   for ent in doc.ents:
     if ent.label_=="PERSON":
       return ent.text.strip()
-    
-
-skills_keywords=["technical skills", "skills", "core competencies", "key skills", "skills and expertise", "skills summary", "skills set", "skills profile", "skills section", "skills overview", "skills highlights", "skills list", "skills and qualifications", "skills and experience"]
-education_keywords=["education", "academic", "qualification","degree", "university", "school", "college", "master"]
-experience_keywords=["experience", "employment", "work history", "professional experience", "career", "work experience","experience", "work", "job","employment"]
-languages_keywords=["languages", "language skills", "language proficiency", "language abilities", "language knowledge", "language expertise", "language section", "language overview", "language highlights", "language list"]
-certifications_keywords=["certifications", "certificates", "courses",'training and workshops','training','workshops']
-projects_keywords=["projects", "project experience", "relevant projects", "project work", "academic projects","wey projects","personal projects"]
-
 def extract_skills(text):
-    end_keywords=[wk for wk in experience_keywords + education_keywords + languages_keywords + certifications_keywords + projects_keywords]
-    lines=text.split("\n")
-    skills=[]
-    in_section = False
-        
-    for line in lines:
-            line_lower = line.lower().strip()
-            if line_lower in skills_keywords:
-                in_section = True
-                continue
-            if in_section and line_lower in end_keywords:
-                break
-            if in_section and line.strip():
-                skills.append(line.strip())
-    
-        
-    return skills 
+    skills_list = [
+        # Programming
+        "python", "sql", "java", "javascript", "r", "c++",
+        # Data Science
+        "machine learning", "deep learning", "nlp", "computer vision",
+        "data analysis", "data visualization", "statistics",
+        # Libraries
+        "pandas", "numpy", "sklearn", "tensorflow", "pytorch",
+        "matplotlib", "seaborn", "plotly",
+        # Tools
+        "power bi", "tableau", "excel", "git", "github",
+        "jupyter", "colab", "streamlit",
+        # Other
+        "communication", "teamwork", "problem solving"
+    ]
+    text_lower=text.lower()
+    found_skills=[]
+    for skill in skills_list:
+      if skill in text_lower:
+         found_skills.append(skill) 
+    return found_skills     
 def extract_education(text):
-  end_keywords=[wk for wk in experience_keywords + education_keywords + languages_keywords + certifications_keywords + projects_keywords]
+  keywords=['education','academic','degree','university','school','college','master']
   lines=text.split("\n")
   education=[]
   in_section = False
     
   for line in lines:
         line_lower = line.lower().strip()
-        if line_lower in education_keywords:
+        if line_lower in keywords:
             in_section = True
             continue
-        if in_section and line_lower in end_keywords:
+        if in_section and line_lower in ["work experience","experience", "projects", "skills", "languages"]:
             break
         if in_section and line.strip():
             education.append(line.strip())
@@ -91,49 +82,33 @@ def extract_education(text):
     
   return education
 def extract_experience(text):
-    end_keywords = [wk for wk in skills_keywords + education_keywords + languages_keywords + certifications_keywords + projects_keywords]
+    keywords = ["projects","experience", "work experience", "employment", "work history", "professional experience", "career", "work experience", "work", "job"]
     lines = text.split('\n')
     experience = []
     in_section = False
     for line in lines:
         line_lower = line.lower().strip()
-        if line_lower in experience_keywords:
+        if line_lower in keywords:
             in_section = True
             continue
 
-        if in_section and line_lower in end_keywords:
+        if in_section and line_lower in ['progect','skills','education','technical skills','languages','Training and Workshops','Training','Workshops']:
             break
         if in_section and line.strip():
             experience.append(line.strip())
     return experience
-def extract_projects(text):
-    end_keywords = [wk for wk in skills_keywords + education_keywords + languages_keywords + certifications_keywords + experience_keywords]
-    lines = text.split('\n')
-    projects = []
-    in_section = False
-    for line in lines:
-        line_lower = line.lower().strip()
-        if line_lower in projects_keywords:
-            in_section = True
-            continue
-
-        if in_section and line_lower in end_keywords:
-            break
-        if in_section and line.strip():
-            projects.append(line.strip())
-    return projects
 def extract_languages(text):
-    end_keywords = [wk for wk in skills_keywords + education_keywords + projects_keywords + certifications_keywords + experience_keywords]
+    keywords = ["languages", "language skills"]
     lines = text.split('\n')
     languages = []
     in_section = False
     
     for line in lines:
         line_lower = line.lower().strip()
-        if line_lower in languages_keywords:
+        if line_lower in keywords:
             in_section = True
             continue
-        if in_section and line_lower in end_keywords:
+        if in_section and line_lower in ["education", "experience", "projects", "certifications",'training and workshops','training','workshops']:
             break
         if in_section and line.strip():
             languages.append(line.strip())
@@ -141,17 +116,17 @@ def extract_languages(text):
     
     return languages
 def extract_certifications(text):
-    end_keywords = [wk for wk in skills_keywords + education_keywords + projects_keywords + languages_keywords + experience_keywords]
+    keywords = ["certifications", "certificates", "courses",'training and workshops','training','workshops']
     lines = text.split('\n')
     certifications = []
     in_section = False
     
     for line in lines:
         line_lower = line.lower().strip()
-        if line_lower in certifications_keywords:
+        if line_lower in keywords:
             in_section = True
             continue
-        if in_section and line_lower in end_keywords:
+        if in_section and line_lower in ["education", "experience", "projects", "languages"]:
             break
         if in_section and line.strip():
             certifications.append(line.strip())
@@ -166,7 +141,6 @@ def parse_cv_with_llm(text):
         - skills (list of strings)
         - education (list of strings)
         - experience (list of strings)
-        - projects (list of strings)
         - languages (list of strings)
         - certifications (list of strings)
         CV Text:

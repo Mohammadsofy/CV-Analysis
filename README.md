@@ -8,7 +8,7 @@ A tool that extracts and analyzes information from CV image using OCR and NLP.
 
 ## ✨ Features
 - Extracts text from CV images using OCR
-- Identifies name, email, phone, skills, education, experience,project, languages, and certifications
+- Identifies name, email, phone, skills, education, experience, languages, and certifications
 - Two extraction modes: Rule-based and AI-powered (LLM)
 - Shows missing skills to improve your chances
 
