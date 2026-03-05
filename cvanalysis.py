@@ -14,20 +14,16 @@ def extract_text_from_image(path_image):
   text=""
   images=Image.open(path_image)
   img_np=np.array(images)
-  if len(img_np.shape)==3: 
-    gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
-  else:
-    gray=img_np
+  gray =cv2.cvtColor(img_np,cv2.COLOR_BGR2GRAY)
+
   sizeimage=cv2.resize(gray,None,fx=2,fy=2,interpolation=cv2.INTER_CUBIC)
 
-  denoised=cv2.fastNlMeansDenoising(sizeimage,h=10)
-  clahe=cv2.createCLAHE(clipLimit=2.0,tileGridSize=(8,8))
-  enhanced=clahe.apply(denoised)
+  lessnoise=cv2.GaussianBlur(sizeimage,(3,3),0)
 
-  thresholds=cv2.threshold(enhanced,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
-  contig=r"--oem 3 --psm 6"
+  thresholds=cv2.threshold(lessnoise,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+
   replaceimagetopil=Image.fromarray(thresholds)
-  text=pytesseract.image_to_string(replaceimagetopil,lang="eng",config=contig)
+  text=pytesseract.image_to_string(replaceimagetopil,lang="eng")
   return text
 def extract_email(text):
   print(text)
@@ -136,21 +132,33 @@ def extract_certifications(text):
     return certifications
 def parse_cv_with_llm(text):
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-    prompt=f"""
-        Extract information from this CV text and return ONLY a JSON object with these exact fields:
-        - name (string)
-        - email (string)
-        - phone (string, may contain numbers, spaces, +, -, ., commas)
-        - skills (list of strings)
-        - education (list of strings)
-        - experience (list of strings)
-        - languages (list of strings)
-        - certifications (list of strings)
-        CV Text:
-        {text}
+    prompt = f"""
+    You are a CV parser. The following text was extracted from a CV image using OCR, 
+    so it may contain typos, spacing errors, or garbled characters.
 
-        Return ONLY the JSON object, nothing else.
-        """
+    Your job is to:
+    1. Intelligently interpret the text despite OCR errors
+    2. Extract and CLEAN the information
+    3. Return ONLY a JSON object with these exact fields:
+    - name (string)
+    - email (string, fix common OCR errors like spaces inside email)
+    - phone (string, may contain numbers, spaces, +, -, ., commas)
+    - skills (list of strings, each skill as a separate item)
+    - education (list of strings, each degree/institution as a separate item)
+    - experience (list of strings, each job/project as a separate item)
+    - languages (list of strings, each language as a separate item)
+    - certifications (list of strings, each certification as a separate item)
+
+    Important:
+    - Fix obvious OCR mistakes (e.g. "Pytnon" → "Python", "Universily" → "University")
+    - Each list item should be a clean, readable sentence or phrase
+    - If a field is not found, return an empty string or empty list
+
+    CV Text:
+    {text}
+
+    Return ONLY the JSON object, nothing else.
+    """
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
