@@ -1,30 +1,35 @@
 # CV Analyzer 📄
 
-A tool that extracts and analyzes information from CV screenshots using OCR and NLP.
+A tool that extracts and analyzes information from CV image using OCR and NLP.
 
-## link app
-(https://cv-analysis-9tadmigdeuopqnshrpe3uv.streamlit.app/)
+## 🔗 Live Demo
+[👉 Try it here]
+[https://cv-analysis-9tadmigdeuopqnshrpe3uv.streamlit.app/]
 
 ## ✨ Features
 - Extracts text from CV images using OCR
-- Identifies name, email, phone, skills, education, experience, languages, and certifications
-- Matches CV against a job description and returns a match score %
+- Identifies name, email, phone, skills, education, experience,project, languages, and certifications
+- Two extraction modes: Rule-based and AI-powered (LLM)
 - Shows missing skills to improve your chances
 
-## 🛠️ Technologies
-• Python
-• pytesseract 
-• OpenCV 
-• spaCy 
-• scikit-learn
-• Streamlit
-
-## ⚙️ How to Run
-1. Open the live demo link above
-2. Upload a screenshot of your CV
+## 🔄 How It Works
+1. Upload a CV screenshot
+2. Choose extraction method:
+   - 🔧 **Rule-based** — NLP + regex pattern matching (fast)
+   - 🤖 **AI-powered** — LLM (Groq / LLaMA 3.3) for accurate extraction
 3. Optionally paste a job description to get your match score
 
-## Status
+## 🛠️ Built With
+- Python
+- Tesseract OCR — text extraction from images
+- OpenCV + Pillow — image processing
+- spaCy — NLP and name extraction
+- scikit-learn — TF-IDF and cosine similarity
+- Groq / LLaMA 3.3 — AI-powered extraction
+- Streamlit — web interface
+
+
 ## 📌 Status
 Work in progress — tested on a limited number of CVs.
+Next step: expand dataset testing and improve extraction accuracy.
 

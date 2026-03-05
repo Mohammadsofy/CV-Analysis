@@ -46,7 +46,7 @@ if uploaded_file:
             }
 
     st.subheader("👤 Basic information")
-    col1, col2,col3 = st.columns(3)
+    col1, col2,col3 = st.columns(1)
     with col1:
         st.markdown(f"**Name:**")
         st.markdown(f"<span style='color:#4CAF50; font-size:18px'>{data['name']}</span>", unsafe_allow_html=True)
