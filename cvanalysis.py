@@ -47,11 +47,11 @@ def extract_name(text):
       return ent.text.strip()
     
 
-skills_keywords=["technical skills", "skills", "core competencies", "key skills", "skills and expertise", "skills summary", "skills set", "skills profile", "skills section", "skills overview", "skills highlights", "skills list", "skills and qualifications", "skills and experience"],
-education_keywords=["education", "academic", "qualification","degree", "university", "school", "college", "master"],
-experience_keywords=["experience", "employment", "work history", "professional experience", "career", "work experience","experience", "work", "job","employment"],
-languages_keywords=["languages", "language skills", "language proficiency", "language abilities", "language knowledge", "language expertise", "language section", "language overview", "language highlights", "language list"],
-certifications_keywords=["certifications", "certificates", "courses",'training and workshops','training','workshops'],
+skills_keywords=["technical skills", "skills", "core competencies", "key skills", "skills and expertise", "skills summary", "skills set", "skills profile", "skills section", "skills overview", "skills highlights", "skills list", "skills and qualifications", "skills and experience"]
+education_keywords=["education", "academic", "qualification","degree", "university", "school", "college", "master"]
+experience_keywords=["experience", "employment", "work history", "professional experience", "career", "work experience","experience", "work", "job","employment"]
+languages_keywords=["languages", "language skills", "language proficiency", "language abilities", "language knowledge", "language expertise", "language section", "language overview", "language highlights", "language list"]
+certifications_keywords=["certifications", "certificates", "courses",'training and workshops','training','workshops']
 projects_keywords=["projects", "project experience", "relevant projects", "project work", "academic projects","wey projects","personal projects"]
 
 def extract_skills(text):
